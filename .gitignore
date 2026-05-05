@@ -1,0 +1,9 @@
+build
+.venv
+.west
+bootloader
+modules
+tools
+zephyr-manifest
+zephyr
+zrpc
