@@ -1,0 +1,57 @@
+FROM debian:bookworm
+LABEL maintainer="vilhelm.engstrom@tuta.io"
+
+RUN <<EOF bash
+set -eu
+groupadd -g@GID@ builder
+useradd -mu@UID@  -g@GID@ builder
+usermod -aG sudo builder
+mkdir -p /etc/sudoers.d
+echo "builder ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/builder
+EOF
+
+WORKDIR /home/builder/zephyr-workspace
+
+COPY <<EOF /home/builder/entrypoint
+#!/bin/bash
+set -eu
+set -o vi
+[ -f .venv/bin/activate ] && . .venv/bin/activate
+exec "\$@"
+EOF
+
+RUN <<EOF bash
+chown builder:builder /home/builder/entrypoint
+chmod 700 /home/builder/entrypoint
+EOF
+
+RUN <<EOF bash
+set -eu
+apt-get update
+apt-get upgrade -y
+apt-get install -y --no-install-recommends \
+	ccache dfu-util \
+	cmake  \
+	device-tree-compiler \
+	file \
+	g++-multilib \
+	gcc \
+	gcc-multilib \
+	git \
+	gperf \
+	libmagic1 \
+	libsdl2-dev \
+	make \
+	ninja-build \
+	python3-dev \
+	python3-pip \
+	python3-tk \
+	python3-venv \
+	ssh \
+	sudo \
+	wget \
+	xz-utils
+EOF
+
+USER builder
+ENTRYPOINT [ "/home/builder/entrypoint" ]
