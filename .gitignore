@@ -4,6 +4,7 @@ build
 bootloader
 modules
 tools
-zephyr-manifest
 zephyr
+zephyr-manifest
+zephyr-sdk
 zrpc
