@@ -108,6 +108,15 @@ $(foreach _cpu,m4 m7,$(_$(_cpu)_build)/zephyr.elf): $(BUILDDIR)/.zrpc.requiremen
 	$(call docker-run,west build -b nucleo_h755zi_q/stm32h755xx/$(notdir $(patsubst %/,%,$(dir $@))) -d $(dir $@) $(_zrpc)/samples/subsys/rpc/zrpc-virtio)
 
 
+.PHONY: menuconfig-m4
+menuconfig-m4: $(if $(FORCE_MENUCONFIG),,$(_m4_build)/zephyr.elf)
+	$(call docker-run,west build -t nucleo_h755zi_q/stm32h755xx/m4 -d $(_m4_build) -t menuconfig $(_zrpc)/samples/subsys/rpc/zrpc-virtio,-ti)
+
+.PHONY: menuconfig-m7
+menuconfig-m7: $(if $(FORCE_MENUCONFIG),,$(_m7_build)/zephyr.elf)
+	$(call docker-run,west build -t nucleo_h755zi_q/stm32h755xx/m7 -d $(_m7_build) -t menuconfig $(_zrpc)/samples/subsys/rpc/zrpc-virtio,-ti)
+
+
 .PHONY: docker-shell
 docker-shell: $(BUILDDIR)/.docker.stamp
 	$(call docker-run,bash, -ti)
