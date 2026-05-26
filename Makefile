@@ -94,7 +94,7 @@ $(BUILDDIR)/.sdk.stamp: $(BUILDDIR)/.zephyr.packages.stamp
 .PHONY: manifest-requirements
 zrpc-requirements: $(BUILDDIR)/.zrpc.requirements.stamp
 
-$(BUILDDIR)/.zrpc.requirements.stamp: $(BUILDDIR)/.sdk.stamp
+$(BUILDDIR)/.zrpc.requirements.stamp: $(BUILDDIR)/.sdk.stamp $(addsuffix /requirements.txt,zrpc zrpc/scripts)
 	$(call docker-run,python3 -m pip install -r $(_zrpc)/requirements.txt)
 	$(call docker-run,touch $@)
 
